@@ -2,17 +2,23 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
+import { Role } from './constants/roles.enum';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
   create(username: string, email: string, phone: string, password: string) {
-    const user = this.userRepo.create({ username, email, phone, password });
+    const user = this.userRepo.create({
+      username,
+      email,
+      phone,
+      password,
+    });
     return this.userRepo.save(user);
   }
 
-  async findOne(id: number) {
+  async findOneById(id: number) {
     if (!id) {
       throw new NotFoundException('User not found!');
     }
@@ -25,8 +31,11 @@ export class UsersService {
     return user;
   }
 
-  find(email: string) {
-    return this.userRepo.findBy({ email });
+  findOneByEmail(email: string) {
+    if (!email) {
+      throw new NotFoundException('User not found!');
+    }
+    return this.userRepo.findOne({ where: { email } });
   }
 
   async update(id: number, attr: Partial<User>) {

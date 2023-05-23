@@ -1,9 +1,9 @@
 import { BadRequestException, Body, Injectable, Req } from '@nestjs/common';
-import { CreateUserDto } from 'src/dtos/user/create-user.dto';
+import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { SignInUserDto } from 'src/dtos/user/signin-user.dto';
+import { SignInUserDto } from 'src/users/dtos/signin-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,9 +13,9 @@ export class AuthService {
   ) {}
   async signUp(@Body() body: CreateUserDto) {
     //see if email is in use
-    const users = await this.userService.find(body.email);
+    let user = await this.userService.findOneByEmail(body.email);
 
-    if (users.length) {
+    if (user) {
       throw new BadRequestException('User with this email already exists!');
     }
 
@@ -24,17 +24,36 @@ export class AuthService {
     const hash = await bcrypt.hash(body.password, salt);
 
     //create user with hashed password
-    const user = this.userService.create(
+    user = await this.userService.create(
       body.username,
       body.email,
       body.phone,
       hash,
     );
 
-    const token = this.jwtService.sign({ email: body.email });
+    //generating jwt token
+    const token = await this.jwtService.signAsync({ email: body.email });
 
     return { user, token };
   }
 
-  signIn(@Body() body: SignInUserDto) {}
+  async signIn(@Body() body: SignInUserDto) {
+    //checking if email is valid or not
+    const user = await this.userService.findOneByEmail(body.email);
+    if (!user) {
+      throw new BadRequestException('Wrong credentials!');
+    }
+
+    //checking password is valid or not
+    const result = await bcrypt.compare(body.password, user.password);
+
+    console.log(result);
+    if (!result) {
+      throw new BadRequestException('Wrong credentials!');
+    }
+
+    const token = await this.jwtService.signAsync({ email: user.email });
+
+    return { user, token };
+  }
 }

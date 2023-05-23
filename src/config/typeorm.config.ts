@@ -10,5 +10,5 @@ export const config: TypeOrmModuleOptions = {
   database: 'ecommerce',
   entities: [User],
   synchronize: true,
-  dropSchema: true,
+  // dropSchema: true,
 };
