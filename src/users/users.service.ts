@@ -2,15 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { UserRequest } from './entities/user-request.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User) private userRepo: Repository<User>,
-    @InjectRepository(UserRequest)
-    private userRequestRepo: Repository<UserRequest>,
-  ) {}
+  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
   create(username: string, email: string, phone: string, password: string) {
     const user = this.userRepo.create({
@@ -60,11 +55,5 @@ export class UsersService {
     }
 
     return this.userRepo.remove(user);
-  }
-
-  //user requests that he want to become seller to admin
-  roleChangeRequest(email: string) {
-    const user = { email };
-    return this.userRequestRepo.save(user);
   }
 }

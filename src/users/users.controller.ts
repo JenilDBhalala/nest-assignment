@@ -1,25 +1,14 @@
-import { Controller, Post, Req } from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { UsersService } from './users.service';
-import { Request } from 'express';
-import { JwtService } from '@nestjs/jwt';
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
-  extractEmailFromToken(token: string): string {
-    return this.jwtService.decode(token)['email'];
-  }
-
-  @Post('request-seller')
-  roleChangeRequest(@Req() req: Request) {
-    const token = req.cookies['token'];
-
-    const email = this.extractEmailFromToken(token);
-
-    return this.usersService.roleChangeRequest(email);
+  @UseGuards(AuthGuard)
+  @Get()
+  trynow() {
+    return 'hello';
   }
 }

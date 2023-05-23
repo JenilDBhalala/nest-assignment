@@ -1,9 +1,18 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Post,
+  Req,
+  Res,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { SignInUserDto } from 'src/users/dtos/signin-user.dto';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -26,5 +35,22 @@ export class AuthController {
     const result = await this.authService.signIn(body);
     res.cookie('token', result.token, { httpOnly: true });
     return result.user;
+  }
+
+  @Post('signout')
+  signout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('token');
+    return 'logout successfully!';
+  }
+
+  @Post('signin/admin')
+  async signInAdmin(
+    @Body() body: SignInUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.signInAdmin(body);
+    res.cookie('token', result.token, { httpOnly: true });
+
+    return result.email;
   }
 }

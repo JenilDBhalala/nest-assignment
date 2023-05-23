@@ -1,9 +1,16 @@
-import { BadRequestException, Body, Injectable, Req } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Injectable,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SignInUserDto } from 'src/users/dtos/signin-user.dto';
+import { adminConfig } from 'src/config/admin.config';
 
 @Injectable()
 export class AuthService {
@@ -55,5 +62,21 @@ export class AuthService {
     const token = await this.jwtService.signAsync({ email: user.email });
 
     return { user, token };
+  }
+
+  async signInAdmin(@Body() body: SignInUserDto) {
+    //checking if email is valid or not
+    if (body.email !== adminConfig.email) {
+      throw new BadRequestException('Wrong credentials!');
+    }
+
+    //checking if password is valid or not
+    if (body.password !== adminConfig.password) {
+      throw new BadRequestException('Wrong credentials!');
+    }
+
+    const token = await this.jwtService.signAsync({ email: body.email });
+
+    return { email: body.email, token };
   }
 }
