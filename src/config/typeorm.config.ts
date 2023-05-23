@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
+import { UserRequest } from 'src/users/entities/user-request.entity';
+import { User } from 'src/users/entities/user.entity';
 
 export const config: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -8,7 +9,7 @@ export const config: TypeOrmModuleOptions = {
   username: 'root',
   password: 'jJ9510679933@',
   database: 'ecommerce',
-  entities: [User],
+  entities: [User, UserRequest],
   synchronize: true,
   // dropSchema: true,
 };
