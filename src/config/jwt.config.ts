@@ -1,4 +1,4 @@
 export const jwtConfig = {
   secret: 'THISISTOPSECRET',
-  expiresIn: '60s',
+  expiresIn: '1h',
 };

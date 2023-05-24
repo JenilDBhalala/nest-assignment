@@ -4,13 +4,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConfig } from 'src/config/jwt.config';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/services/users.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class IsAdminGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private userService: UsersService,
@@ -27,12 +25,13 @@ export class AuthGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyAsync(token);
-      const user = this.userService.findOneByEmail(payload.email);
+      const user = await this.userService.findOneByEmail(payload.email);
       request.user = user;
+      if (user.role === 1) return true;
     } catch (err) {
       throw new UnauthorizedException(err.message);
     }
 
-    return true;
+    return false;
   }
 }

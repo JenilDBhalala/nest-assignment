@@ -1,12 +1,6 @@
-import {
-  BadRequestException,
-  Body,
-  Injectable,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { BadRequestException, Body, Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/services/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SignInUserDto } from 'src/users/dtos/signin-user.dto';
@@ -39,7 +33,10 @@ export class AuthService {
     );
 
     //generating jwt token
-    const token = await this.jwtService.signAsync({ email: body.email });
+    const token = await this.jwtService.signAsync({
+      userId: user.id,
+      email: body.email,
+    });
 
     return { user, token };
   }
@@ -59,7 +56,10 @@ export class AuthService {
       throw new BadRequestException('Wrong credentials!');
     }
 
-    const token = await this.jwtService.signAsync({ email: user.email });
+    const token = await this.jwtService.signAsync({
+      userId: user.id,
+      email: user.email,
+    });
 
     return { user, token };
   }

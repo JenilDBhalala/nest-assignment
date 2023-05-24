@@ -8,7 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
-import { AuthService } from './auth.service';
+import { AuthService } from '../services/auth.service';
 import { Response } from 'express';
 import { SignInUserDto } from 'src/users/dtos/signin-user.dto';
 
