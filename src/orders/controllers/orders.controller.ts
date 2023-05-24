@@ -1,3 +1,4 @@
+import { Product } from './../../products/entities/product.entity';
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { PlaceOrderDto } from '../dtos/place-order.dto';
 import { OrdersService } from '../services/orders.service';
@@ -11,12 +12,14 @@ export class OrdersController {
 
   @Post()
   placeOrder(@Body() body: PlaceOrderDto, @CurrentUser() userId: number) {
+    console.log(userId)
     return this.ordersService.placeOrder(
-      new Date(body.orderDate),
-      new Date(body.expectedDeliveryDate),
+      body.orderDate,
+      body.expectedDeliveryDate,
       body.orderStatus,
       body.shippingAddress,
       userId,
+      body.products
     );
   }
 }

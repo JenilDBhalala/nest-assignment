@@ -9,7 +9,6 @@ export const CurrentUser = createParamDecorator(
     const token = request.cookies['token'];
 
     const payload = await jwtService.verifyAsync(token);
-
-    return payload.id;
+    return payload.userId;
   },
 );

@@ -11,11 +11,11 @@ import { Product } from 'src/products/entities/product.entity';
 import { OrderStatus } from '../constants/orderstatus.enum';
 
 export class PlaceOrderDto {
-  @IsDate()
+  // @IsDate()
   @IsNotEmpty()
   orderDate: Date;
 
-  @IsDate()
+  // @IsDate()
   @IsNotEmpty()
   expectedDeliveryDate: Date;
 

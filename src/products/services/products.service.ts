@@ -15,7 +15,7 @@ export class ProductsService {
   }
 
   async updateProduct(id: number, attr: Partial<Product>) {
-    const product = await this.productRepo.findOneBy({ id });
+    const product = await this.productRepo.findOne({where :{ productId : id }});
     if (!product) {
       throw new NotFoundException('Product not found!');
     }
@@ -24,7 +24,7 @@ export class ProductsService {
   }
 
   async deleteProduct(id: number) {
-    const product = await this.productRepo.findOneBy({ id });
+    const product = await this.productRepo.findOne({where :{ productId : id }});
     if (!product) {
       throw new NotFoundException('Product not found!');
     }
@@ -32,7 +32,7 @@ export class ProductsService {
   }
 
   async viewProduct(id: number) {
-    const product = await this.productRepo.findOneBy({ id });
+    const product = await this.productRepo.findOne({where :{ productId : id }});
     if (!product) {
       throw new NotFoundException('Product not found!');
     }
