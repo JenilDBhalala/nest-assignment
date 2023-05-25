@@ -9,7 +9,7 @@ import { Role } from 'src/constants/roles.enum';
 import { UsersService } from 'src/users/services/users.service';
 
 @Injectable()
-export class IsAdminGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private userService: UsersService,
