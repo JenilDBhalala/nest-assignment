@@ -4,13 +4,14 @@ import { UsersService } from 'src/users/services/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SignInUserDto } from 'src/users/dtos/signin-user.dto';
-import { adminConfig } from 'src/config/admin.config';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
   async signUp(@Body() body: CreateUserDto) {
     //see if email is in use
@@ -66,12 +67,12 @@ export class AuthService {
 
   async signInAdmin(@Body() body: SignInUserDto) {
     //checking if email is valid or not
-    if (body.email !== adminConfig.email) {
+    if (body.email !== this.configService.get('ADMIN.EMAIL')) {
       throw new BadRequestException('Wrong credentials!');
     }
 
     //checking if password is valid or not
-    if (body.password !== adminConfig.password) {
+    if (body.password !== this.configService.get('ADMIN.PASSWORD')) {
       throw new BadRequestException('Wrong credentials!');
     }
 

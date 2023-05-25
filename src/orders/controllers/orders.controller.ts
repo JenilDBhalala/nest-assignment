@@ -1,5 +1,5 @@
 import { Product } from './../../products/entities/product.entity';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { PlaceOrderDto } from '../dtos/place-order.dto';
 import { OrdersService } from '../services/orders.service';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
@@ -12,14 +12,18 @@ export class OrdersController {
 
   @Post()
   placeOrder(@Body() body: PlaceOrderDto, @CurrentUser() userId: number) {
-    console.log(userId)
     return this.ordersService.placeOrder(
       body.orderDate,
       body.expectedDeliveryDate,
       body.orderStatus,
       body.shippingAddress,
       userId,
-      body.products
+      body.products,
     );
+  }
+
+  @Get()
+  viewOrder() {
+    return this.ordersService.viewOrder();
   }
 }

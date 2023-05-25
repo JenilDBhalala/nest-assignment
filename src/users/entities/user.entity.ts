@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { Role } from 'src/users/constants/roles.enum';
+import { Role } from 'src/constants/roles.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

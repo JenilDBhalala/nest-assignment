@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from 'src/constants/roles.enum';
 import { UsersService } from 'src/users/services/users.service';
 
 @Injectable()
@@ -27,7 +28,7 @@ export class IsAdminGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token);
       const user = await this.userService.findOneByEmail(payload.email);
       request.user = user;
-      if (user.role === 1) return true;
+      if (user.role === Role.admin) return true;
     } catch (err) {
       throw new UnauthorizedException(err.message);
     }

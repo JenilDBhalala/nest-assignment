@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { Product } from 'src/products/entities/product.entity';
 
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { OrderStatus } from '../constants/orderstatus.enum';
+import { OrderStatus } from '../../constants/orderstatus.enum';
 
 @Entity()
 export class Order {

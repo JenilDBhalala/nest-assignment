@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Product } from 'src/products/entities/product.entity';
-import { OrderStatus } from '../constants/orderstatus.enum';
+import { OrderStatus } from '../../constants/orderstatus.enum';
 
 export class PlaceOrderDto {
   // @IsDate()

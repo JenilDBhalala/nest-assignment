@@ -1,24 +1,26 @@
 import { OrderDetails } from './../entities/order-details.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { OrderStatus } from '../constants/orderstatus.enum';
-import { PlaceOrderDto } from '../dtos/place-order.dto';
+import { OrderStatus } from '../../constants/orderstatus.enum';
 import { Order } from '../entities/order.entity';
 import { Product } from './../../products/entities/product.entity';
 
 @Injectable()
 export class OrdersService {
-  constructor(@InjectRepository(Order) private orderRepo: Repository<Order>,
-  @InjectRepository(OrderDetails) private orderDetailsRepo : Repository<OrderDetails>) {}
+  constructor(
+    @InjectRepository(Order) private orderRepo: Repository<Order>,
+    @InjectRepository(OrderDetails)
+    private orderDetailsRepo: Repository<OrderDetails>,
+  ) {}
 
-  placeOrder(
+  async placeOrder(
     orderDate: Date,
     expectedDeliveryDate: Date,
     orderStatus: OrderStatus,
     shippingAddress: string,
     userId: number,
-    products: Partial<Product>[]
+    products: Partial<Product>[],
   ) {
     const order = this.orderRepo.create({
       orderDate,
@@ -28,14 +30,18 @@ export class OrdersService {
       userId,
     });
 
-    console.log(order)
-    products.forEach((product) => (product['orderId'] =  order.id))
-    console.log(products)
-    // this.orderDetailsRepo.save(products);
-    // const queryBuilder = this.orderDetailsRepo.createQueryBuilder();
+    try {
+      await this.orderRepo.save(order);
+    } catch (err) {
+      throw new InternalServerErrorException();
+    }
 
-    // queryBuilder.insert().into(OrderDetails).values(products)
+    products.forEach((product) => (product['orderId'] = order.id));
 
-    return this.orderRepo.save(order);;
+    return this.orderDetailsRepo.save(products);
+  }
+
+  async viewOrder() {
+    return;
   }
 }
