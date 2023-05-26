@@ -33,7 +33,7 @@ export class AppExceptionFilter implements ExceptionFilter {
       message,
     };
 
-    //BadRequestExceptions will log into info_logger directory
+    //bad request exceptions will log into info_logger directory
     if (body.statusCode === HttpStatus.BAD_REQUEST) {
       infoLogger.info({
         timestamp: new Date().toLocaleString(),
