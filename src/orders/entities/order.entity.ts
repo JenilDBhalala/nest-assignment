@@ -1,7 +1,13 @@
 import { Type } from 'class-transformer';
 import { Product } from 'src/products/entities/product.entity';
 
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { OrderStatus } from '../../constants/orderstatus.enum';
 
 @Entity()
@@ -24,4 +30,18 @@ export class Order {
 
   @Column()
   userId: number;
+
+  @ManyToMany(() => Product)
+  @JoinTable({
+    name: 'order_details',
+    joinColumn: {
+      name: 'order_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'productId',
+    },
+  })
+  products: Product[];
 }

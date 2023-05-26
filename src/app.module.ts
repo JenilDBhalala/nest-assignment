@@ -13,6 +13,8 @@ import { Order } from './orders/entities/order.entity';
 import { OrderDetails } from './orders/entities/order-details.entity';
 import { ADMIN_CONFIG } from './config/admin.config';
 import { JWT_CONFIG } from './config/jwt.config';
+import { TransactionService } from './transaction/transaction.service';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ import { JWT_CONFIG } from './config/jwt.config';
         database: configService.get('DB_NAME'),
         entities: [User, Product, Order, OrderDetails],
         synchronize: true,
+        logging: true,
       }),
       inject: [ConfigService],
     }),
@@ -40,8 +43,9 @@ import { JWT_CONFIG } from './config/jwt.config';
     UsersModule,
     ProductsModule,
     OrdersModule,
+    TransactionModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TransactionService],
 })
 export class AppModule {}

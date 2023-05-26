@@ -1,10 +1,11 @@
 import { OrderDetails } from './../entities/order-details.entity';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrderStatus } from '../../constants/orderstatus.enum';
 import { Order } from '../entities/order.entity';
 import { Product } from './../../products/entities/product.entity';
+import { TransactionService } from 'src/transaction/transaction.service';
 
 @Injectable()
 export class OrdersService {
@@ -12,6 +13,7 @@ export class OrdersService {
     @InjectRepository(Order) private orderRepo: Repository<Order>,
     @InjectRepository(OrderDetails)
     private orderDetailsRepo: Repository<OrderDetails>,
+    private transactionService: TransactionService,
   ) {}
 
   async placeOrder(
@@ -22,23 +24,35 @@ export class OrdersService {
     userId: number,
     products: Partial<Product>[],
   ) {
-    const order = this.orderRepo.create({
-      orderDate,
-      expectedDeliveryDate,
-      orderStatus,
-      shippingAddress,
-      userId,
-    });
-
+    let queryRunner;
     try {
-      await this.orderRepo.save(order);
+      //start transaction
+      queryRunner = await this.transactionService.startTransaction();
+
+      const order = this.orderRepo.create({
+        orderDate,
+        expectedDeliveryDate,
+        orderStatus,
+        shippingAddress,
+        userId,
+      });
+
+      await queryRunner.manager.save(Order, order);
+
+      products.forEach((product) => (product['orderId'] = order.id));
+      const orderDetails = await queryRunner.manager.save(
+        OrderDetails,
+        products,
+      );
+
+      //commit transaction
+      await this.transactionService.commitTransaction(queryRunner);
+      return orderDetails;
     } catch (err) {
-      throw new InternalServerErrorException();
+      //rollback transaction
+      await this.transactionService.rollbackTransaction(queryRunner);
+      throw err;
     }
-
-    products.forEach((product) => (product['orderId'] = order.id));
-
-    return this.orderDetailsRepo.save(products);
   }
 
   async viewOrder() {
