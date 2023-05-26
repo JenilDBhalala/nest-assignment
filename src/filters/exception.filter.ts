@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { errorLogger, infoLogger } from 'src/utils/winston.logger';
 
 @Catch()
 export class AppExceptionFilter implements ExceptionFilter {
@@ -31,6 +32,21 @@ export class AppExceptionFilter implements ExceptionFilter {
       statusCode: status,
       message,
     };
+
+    //BadRequestExceptions will log into info_logger directory
+    if (body.statusCode === HttpStatus.BAD_REQUEST) {
+      infoLogger.info({
+        timestamp: new Date().toLocaleString(),
+        exception,
+        path: exception.stack,
+      });
+    } else {
+      errorLogger.error({
+        timestamp: new Date().toLocaleString(),
+        exception,
+        path: exception.stack,
+      });
+    }
 
     res.status(status).json(body);
   }
