@@ -7,10 +7,6 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
-import { Product } from './products/entities/product.entity';
-import { User } from './users/entities/user.entity';
-import { Order } from './orders/entities/order.entity';
-import { OrderDetails } from './orders/entities/order-details.entity';
 import { ADMIN_CONFIG } from './config/admin.config';
 import { JWT_CONFIG } from './config/jwt.config';
 import { TransactionService } from './transaction/transaction.service';
@@ -33,7 +29,7 @@ import { TransactionModule } from './transaction/transaction.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Product, Order, OrderDetails],
+        entities: [__dirname + '/database/entities/*.entity{.ts,.js}'],
         synchronize: true,
         logging: true,
       }),

@@ -1,13 +1,11 @@
 import {
   IsArray,
-  IsDate,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Product } from 'src/products/entities/product.entity';
+import { Product } from 'src/database/entities/product.entity';
 import { OrderStatus } from '../../constants/orderstatus.enum';
 
 export class PlaceOrderDto {

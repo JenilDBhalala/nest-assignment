@@ -1,11 +1,12 @@
-import { OrderDetails } from './../entities/order-details.entity';
-import { Injectable } from '@nestjs/common';
+import { OrderDetails } from '../../database/entities/order-details.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryRunner, Repository } from 'typeorm';
 import { OrderStatus } from '../../constants/orderstatus.enum';
-import { Order } from '../entities/order.entity';
-import { Product } from './../../products/entities/product.entity';
+import { Order } from '../../database/entities/order.entity';
+import { Product } from '../../database/entities/product.entity';
 import { TransactionService } from 'src/transaction/transaction.service';
+import { ChangeOrderStatusDto } from '../dtos/change-order-status.dto';
 
 @Injectable()
 export class OrdersService {
@@ -24,7 +25,7 @@ export class OrdersService {
     userId: number,
     products: Partial<Product>[],
   ) {
-    let queryRunner;
+    let queryRunner: QueryRunner;
     try {
       //start transaction
       queryRunner = await this.transactionService.startTransaction();
@@ -55,7 +56,27 @@ export class OrdersService {
     }
   }
 
-  async viewOrder() {
-    return;
+  async viewOrders(userId: number) {
+    // const orders = await this.orderRepo.find({ where: { userId } });
+    const queryBuilder = this.orderRepo.createQueryBuilder('order');
+
+    const orders = await queryBuilder
+      .leftJoinAndSelect('order.products', 'products')
+      .where('order.userId = :id', { id: userId })
+      .getMany();
+
+    return orders;
+  }
+
+  async changeOrderStatus(id: number, orderStatus: OrderStatus) {
+    const order = await this.orderRepo.findOne({ where: { id } });
+
+    if (!order) {
+      throw new NotFoundException('order with this id not exists!');
+    }
+
+    order.orderStatus = orderStatus;
+
+    return this.orderRepo.save(order);
   }
 }
