@@ -1,10 +1,9 @@
-import { OrderDetails } from '../../database/entities/order-details.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryRunner, Repository } from 'typeorm';
-import { OrderStatus } from '../../constants/orderstatus.enum';
-import { TransactionService } from 'src/transaction/transaction.service';
-import { Order, Product } from 'src/database/entities';
+import { OrderStatus } from 'src/constants';
+import { TransactionService } from 'src/modules/transaction/transaction.service';
+import { Order, Product, OrderDetails } from 'src/database/entities';
 
 @Injectable()
 export class OrdersService {

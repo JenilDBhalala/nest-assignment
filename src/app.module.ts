@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ProductsModule } from './products/products.module';
-import { OrdersModule } from './orders/orders.module';
+import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ProductsModule } from './modules/products/products.module';
+import { OrdersModule } from './modules/orders/orders.module';
 import { ADMIN_CONFIG, JWT_CONFIG } from './config';
-import { TransactionService } from './transaction/transaction.service';
-import { TransactionModule } from './transaction/transaction.module';
+import { TransactionService } from './modules/transaction/transaction.service';
+import { TransactionModule } from './modules/transaction/transaction.module';
 
 @Module({
   imports: [

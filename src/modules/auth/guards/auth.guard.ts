@@ -5,11 +5,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from 'src/constants/roles.enum';
-import { UsersService } from 'src/users/services/users.service';
+import { UsersService } from 'src/modules/users/users.service';
 
 @Injectable()
-export class AdminGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private userService: UsersService,
@@ -28,11 +27,10 @@ export class AdminGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token);
       const user = await this.userService.findOneByEmail(payload.email);
       request.user = user;
-      if (user.role === Role.admin) return true;
     } catch (err) {
       throw new UnauthorizedException(err.message);
     }
 
-    return false;
+    return true;
   }
 }

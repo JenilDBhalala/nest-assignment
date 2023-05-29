@@ -6,10 +6,9 @@ import {
   Res,
   UseInterceptors,
 } from '@nestjs/common';
-import { CreateUserDto, SignInUserDto } from 'src/users/dtos';
-import { AuthService } from '../services/auth.service';
+import { CreateUserDto, SignInUserDto } from 'src/modules/users/dtos';
+import { AuthService } from './auth.service';
 import { Response } from 'express';
-
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')

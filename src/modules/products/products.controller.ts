@@ -8,9 +8,9 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard } from 'src/auth/guards/admin.guard';
-import { CreateProductDto, UpdateProductDto } from '../dtos';
-import { ProductsService } from '../services/products.service';
+import { AdminGuard } from 'src/modules/auth/guards/admin.guard';
+import { CreateProductDto, UpdateProductDto } from './dtos';
+import { ProductsService } from './products.service';
 
 @Controller('products')
 export class ProductsController {

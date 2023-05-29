@@ -6,14 +6,11 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Product } from 'src/database/entities';
-import { OrderStatus } from '../../constants/orderstatus.enum';
-
+import { OrderStatus } from 'src/constants';
 export class PlaceOrderDto {
-  // @IsDate()
   @IsNotEmpty()
   orderDate: Date;
 
-  // @IsDate()
   @IsNotEmpty()
   expectedDeliveryDate: Date;
 
