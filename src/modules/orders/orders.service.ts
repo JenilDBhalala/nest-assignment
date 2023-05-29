@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QueryRunner, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { OrderStatus } from 'src/constants';
 import { TransactionService } from 'src/modules/transaction/transaction.service';
 import { Order, Product, OrderDetails } from 'src/database/entities';
@@ -9,7 +9,6 @@ import { Order, Product, OrderDetails } from 'src/database/entities';
 export class OrdersService {
   constructor(
     @InjectRepository(Order) private orderRepo: Repository<Order>,
-    @InjectRepository(OrderDetails)
     private transactionService: TransactionService,
   ) {}
 
@@ -21,11 +20,9 @@ export class OrdersService {
     userId: number,
     products: Partial<Product>[],
   ) {
-    let queryRunner: QueryRunner;
+    let queryRunner = await this.transactionService.startTransaction();
     try {
       //start transaction
-      queryRunner = await this.transactionService.startTransaction();
-
       const order = this.orderRepo.create({
         orderDate,
         expectedDeliveryDate,

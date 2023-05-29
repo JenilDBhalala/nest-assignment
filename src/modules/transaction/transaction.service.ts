@@ -8,7 +8,7 @@ export class TransactionService {
 
   async startTransaction(): Promise<QueryRunner> {
     const queryRunner = this.entityManager.connection.createQueryRunner();
-    await queryRunner.startTransaction();
+    await queryRunner.startTransaction()
     return queryRunner;
   }
 
