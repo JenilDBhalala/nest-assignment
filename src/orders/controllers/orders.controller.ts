@@ -7,13 +7,11 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { PlaceOrderDto } from '../dtos/place-order.dto';
 import { OrdersService } from '../services/orders.service';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { AdminGuard } from 'src/auth/guards/admin.guard';
-import { ChangeOrderStatusDto } from '../dtos/change-order-status.dto';
-import { OrderStatus } from 'src/constants/orderstatus.enum';
+import { ChangeOrderStatusDto, PlaceOrderDto } from '../dtos';
 
 @Controller('orders')
 @UseGuards(AuthGuard)

@@ -5,7 +5,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Product } from 'src/database/entities/product.entity';
+import { Product } from 'src/database/entities';
 import { OrderStatus } from '../../constants/orderstatus.enum';
 
 export class PlaceOrderDto {

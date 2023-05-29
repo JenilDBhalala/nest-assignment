@@ -7,8 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
-import { ADMIN_CONFIG } from './config/admin.config';
-import { JWT_CONFIG } from './config/jwt.config';
+import { ADMIN_CONFIG, JWT_CONFIG } from './config';
 import { TransactionService } from './transaction/transaction.service';
 import { TransactionModule } from './transaction/transaction.module';
 

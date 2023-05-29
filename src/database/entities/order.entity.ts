@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { Product } from './product.entity';
+import { Product } from '../../database/entities';
 
 import {
   Column,

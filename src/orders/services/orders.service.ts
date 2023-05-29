@@ -3,17 +3,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryRunner, Repository } from 'typeorm';
 import { OrderStatus } from '../../constants/orderstatus.enum';
-import { Order } from '../../database/entities/order.entity';
-import { Product } from '../../database/entities/product.entity';
 import { TransactionService } from 'src/transaction/transaction.service';
-import { ChangeOrderStatusDto } from '../dtos/change-order-status.dto';
+import { Order, Product } from 'src/database/entities';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order) private orderRepo: Repository<Order>,
     @InjectRepository(OrderDetails)
-    private orderDetailsRepo: Repository<OrderDetails>,
     private transactionService: TransactionService,
   ) {}
 
