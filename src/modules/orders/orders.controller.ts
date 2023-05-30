@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CurrentUser } from 'src/core/decorators/current-user.decorator';
-import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
+import { AuthGuard } from 'src/core/guards/auth.guard';
 import { AdminGuard } from 'src/modules/auth/guards/admin.guard';
 import { ChangeOrderStatusDto, PlaceOrderDto } from './dtos';
 

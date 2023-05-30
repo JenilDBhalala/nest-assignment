@@ -4,11 +4,13 @@ import {
   Controller,
   Post,
   Res,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto, SignInUserDto } from 'src/modules/users/dtos';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
+import { AuthGuard } from 'src/core/guards/auth.guard';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')
@@ -35,6 +37,7 @@ export class AuthController {
     return result.user;
   }
 
+  @UseGuards(AuthGuard)
   @Post('signout')
   signout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('token');
