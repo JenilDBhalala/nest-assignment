@@ -8,11 +8,14 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/core/decorators';
 import { AdminGuard } from 'src/core/guards/admin.guard';
 import { CreateProductDto, UpdateProductDto } from './dtos';
 import { ProductsService } from './products.service';
 
+@ApiTags('Products')
+@ApiBearerAuth('Authorization')
 @UseGuards(AdminGuard)
 @Controller('products')
 export class ProductsController {

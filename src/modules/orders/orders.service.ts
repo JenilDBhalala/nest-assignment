@@ -50,7 +50,6 @@ export class OrdersService {
   }
 
   async viewOrders(userId: number) {
-    // const orders = await this.orderRepo.find({ where: { userId } });
     const queryBuilder = this.orderRepo.createQueryBuilder('order');
 
     const orders = await queryBuilder

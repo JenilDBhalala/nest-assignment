@@ -8,7 +8,9 @@ import {
 import { CreateUserDto, SignInUserDto } from 'src/modules/users/dtos';
 import { AuthService } from './auth.service';
 import { Public } from 'src/core/decorators';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @UseInterceptors(ClassSerializerInterceptor)
 @Public()
 @Controller('auth')
