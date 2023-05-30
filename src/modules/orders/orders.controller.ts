@@ -10,7 +10,7 @@ import {
 import { OrdersService } from './orders.service';
 import { CurrentUser } from 'src/core/decorators/current-user.decorator';
 import { AuthGuard } from 'src/core/guards/auth.guard';
-import { AdminGuard } from 'src/modules/auth/guards/admin.guard';
+import { AdminGuard } from 'src/core/guards/admin.guard';
 import { ChangeOrderStatusDto, PlaceOrderDto } from './dtos';
 
 @Controller('orders')

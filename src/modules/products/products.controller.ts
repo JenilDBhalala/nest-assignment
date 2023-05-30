@@ -8,7 +8,7 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard } from 'src/modules/auth/guards/admin.guard';
+import { AdminGuard } from 'src/core/guards/admin.guard';
 import { CreateProductDto, UpdateProductDto } from './dtos';
 import { ProductsService } from './products.service';
 
