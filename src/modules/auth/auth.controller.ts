@@ -23,8 +23,8 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const result = await this.authService.signUp(body);
-    res.cookie('token', result.token, { httpOnly: true });
-    return result.user;
+    // res.cookie('token', result.token, { httpOnly: true });
+    return result;
   }
 
   @Post('signin')
@@ -33,8 +33,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const result = await this.authService.signIn(body);
-    res.cookie('token', result.token, { httpOnly: true });
-    return result.user;
+    return result;
   }
 
   @UseGuards(AuthGuard)
@@ -50,8 +49,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const result = await this.authService.signInAdmin(body);
-    res.cookie('token', result.token, { httpOnly: true });
 
-    return result.email;
+    return result;
   }
 }

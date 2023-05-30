@@ -18,21 +18,23 @@ export class AdminGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    const token = request.cookies['token'];
+    const authorizationHeader = request.headers.authorization;
+    if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
+      const token = authorizationHeader.split(' ')[1];
 
-    if (!token) {
-      throw new UnauthorizedException();
+      try {
+        const payload = await this.jwtService.verifyAsync(token);
+        const user = await this.userService.findOneByEmail(payload.email);
+        request.user = user;
+
+        if (user.role === Role.admin) return true;
+      } catch (error) {
+        //if token verification goes wrong
+        return false;
+      }
     }
 
-    try {
-      const payload = await this.jwtService.verifyAsync(token);
-      const user = await this.userService.findOneByEmail(payload.email);
-      request.user = user;
-      if (user.role === Role.admin) return true;
-    } catch (err) {
-      throw new UnauthorizedException(err.message);
-    }
-
+    //no authorization header found in the request
     return false;
   }
 }
