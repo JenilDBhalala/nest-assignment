@@ -76,7 +76,15 @@ export class AuthService {
       throw new BadRequestException('Wrong credentials!');
     }
 
-    const token = await this.jwtService.signAsync({ email: body.email });
+    const admin = await this.userService.findOneByEmail(body.email);
+    if (!admin) {
+      throw new BadRequestException('Wrong credentials!');
+    }
+
+    const token = await this.jwtService.signAsync({
+      userId: admin.id,
+      email: body.email,
+    });
 
     return { email: body.email, token };
   }

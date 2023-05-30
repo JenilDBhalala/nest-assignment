@@ -7,6 +7,8 @@ import { ProductsModule } from './modules/products/products.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ADMIN_CONFIG, JWT_CONFIG } from './config';
 import { TransactionModule } from './modules/transaction/transaction.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './core/guards/auth.guard';
 
 @Module({
   imports: [
@@ -36,6 +38,12 @@ import { TransactionModule } from './modules/transaction/transaction.module';
     ProductsModule,
     OrdersModule,
     TransactionModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}

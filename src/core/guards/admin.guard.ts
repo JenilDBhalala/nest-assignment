@@ -4,6 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from 'src/constants/roles.enum';
 import { UsersService } from 'src/modules/users/users.service';
@@ -13,9 +14,15 @@ export class AdminGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private userService: UsersService,
+    private reflector: Reflector,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.get('isPublic', context.getClass());
+    const isPublicRoute = this.reflector.get('isPublic', context.getHandler());
+
+    if (isPublic || isPublicRoute) return true;
+
     const request = context.switchToHttp().getRequest();
 
     const authorizationHeader = request.headers.authorization;
