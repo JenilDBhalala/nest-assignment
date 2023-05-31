@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import { Product } from '../../database/entities';
 
 import {
@@ -21,7 +20,7 @@ export class Order {
   @Column({ type: 'date' })
   expectedDeliveryDate: Date;
 
-  @Column()
+  @Column({default : 'Pending'})
   orderStatus: OrderStatus;
 
   @Column()
@@ -42,5 +41,5 @@ export class Order {
       referencedColumnName: 'productId',
     },
   })
-  products: Product[];
+  products?: Product[];
 }

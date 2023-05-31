@@ -23,9 +23,6 @@ export class OrdersController {
   @Post()
   placeOrder(@Body() body: PlaceOrderDto, @CurrentUser() userId: number) {
     return this.ordersService.placeOrder(
-      body.orderDate,
-      body.expectedDeliveryDate,
-      body.orderStatus,
       body.shippingAddress,
       userId,
       body.products,

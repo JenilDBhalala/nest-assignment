@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { OrderStatus } from 'src/constants';
 import { TransactionService } from 'src/modules/transaction/transaction.service';
 import { Order, Product, OrderDetails } from 'src/database/entities';
+import { addDays } from 'date-fns';
 
 @Injectable()
 export class OrdersService {
@@ -19,10 +20,8 @@ export class OrdersService {
     private transactionService: TransactionService,
   ) {}
 
+  
   async placeOrder(
-    orderDate: Date,
-    expectedDeliveryDate: Date,
-    orderStatus: OrderStatus,
     shippingAddress: string,
     userId: number,
     products: any,
@@ -31,9 +30,8 @@ export class OrdersService {
     try {
       //start transaction
       const order = this.orderRepo.create({
-        orderDate,
-        expectedDeliveryDate,
-        orderStatus,
+        orderDate : new Date(),
+        expectedDeliveryDate : addDays(new Date(), 3),
         shippingAddress,
         userId,
       });

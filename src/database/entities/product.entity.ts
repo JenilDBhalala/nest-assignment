@@ -1,5 +1,5 @@
 import { Order } from './order.entity';
-import { Column, PrimaryGeneratedColumn, Entity, ManyToMany } from 'typeorm';
+import { Column, PrimaryGeneratedColumn, Entity, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
 export class Product {
@@ -13,5 +13,5 @@ export class Product {
   price: number;
 
   @ManyToMany(() => Order, (order) => order.products)
-  orders: Order[];
+  orders?: Order[];
 }

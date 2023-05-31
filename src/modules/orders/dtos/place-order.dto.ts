@@ -35,37 +35,6 @@ export class OrderItemsDTO {
 
 export class PlaceOrderDto {
   @ApiProperty({
-    type: Date,
-    description: 'order place date',
-    example: '2023-05-29',
-  })
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
-    message: `orderDate must be in YYYY-MM-DD format`,
-  })
-  @IsDateString()
-  orderDate: Date;
-
-  @ApiProperty({
-    type: Date,
-    description: 'expected delivery date of order',
-    example: '2023-06-01',
-  })
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
-    message: `expectedDeliveryDate must be in YYYY-MM-DD format`,
-  })
-  @IsDateString()
-  expectedDeliveryDate: Date;
-
-  @ApiProperty({
-    type: String,
-    description: 'order status : Pending or Processing or Shipped or Delivered',
-    example: 'Processing',
-  })
-  @IsNotEmpty()
-  @IsEnum(OrderStatus)
-  orderStatus: OrderStatus;
-
-  @ApiProperty({
     type: String,
     description: 'shipping address of order',
     example: '40, ABC Apartment, XYZ road, Ahmedabad',
