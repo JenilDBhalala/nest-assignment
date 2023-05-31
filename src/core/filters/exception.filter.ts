@@ -20,7 +20,7 @@ export class AppExceptionFilter implements ExceptionFilter {
       status = exception.getStatus();
       message = exception.message;
 
-      //setting message of validation errors thrown by  class-validators
+      //setting message of validation errors thrown by class-validators
       const response: any = exception.getResponse();
 
       if (response.message) {
@@ -33,19 +33,23 @@ export class AppExceptionFilter implements ExceptionFilter {
       message,
     };
 
+    const logObj =
+      process.env['ENVIRONMENT'] === 'developement'
+        ? {
+            timestamp: new Date().toLocaleString(),
+            exception,
+            path: exception.stack,
+          }
+        : {
+            timestamp: new Date().toLocaleString(),
+            exception,
+          };
+
     //bad request exceptions will log into info_logger directory
     if (body.statusCode === HttpStatus.BAD_REQUEST) {
-      infoLogger.info({
-        timestamp: new Date().toLocaleString(),
-        exception,
-        path: exception.stack,
-      });
+      infoLogger.info(logObj);
     } else {
-      errorLogger.error({
-        timestamp: new Date().toLocaleString(),
-        exception,
-        path: exception.stack,
-      });
+      errorLogger.error(logObj);
     }
 
     res.status(status).json(body);

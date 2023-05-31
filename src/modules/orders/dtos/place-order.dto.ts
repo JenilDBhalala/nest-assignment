@@ -1,15 +1,11 @@
 import {
   IsArray,
-  IsDateString,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsPositive,
   IsString,
-  Matches,
   ValidateNested,
 } from 'class-validator';
-import { OrderStatus } from 'src/constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 

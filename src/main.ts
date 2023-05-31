@@ -3,10 +3,10 @@ import { NestFactory} from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { AppExceptionFilter } from './core/filters/exception.filter';
-import { ResponseInterceptor } from './core/interceptors/response.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as morgan from 'morgan';
 import helmet from 'helmet';
+import * as basicAuth from 'express-basic-auth'
 
 const baseUrl = '/api';
 
@@ -48,6 +48,16 @@ async function bootstrap() {
   app.use(morgan('dev'));
   app.use(helmet());
 
+  //protection of Swagger-UI for visitors
+  app.use(
+    ['/api', '/api-json'],
+    basicAuth({
+      challenge: true,
+      users: {
+        [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
+      },
+    }),
+  );
   configureSwagger(app);
 
   //starting server
