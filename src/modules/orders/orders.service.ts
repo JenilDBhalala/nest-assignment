@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrderStatus } from 'src/constants';
@@ -9,6 +13,9 @@ import { Order, Product, OrderDetails } from 'src/database/entities';
 export class OrdersService {
   constructor(
     @InjectRepository(Order) private orderRepo: Repository<Order>,
+    @InjectRepository(OrderDetails)
+    private orderDetailsRepo: Repository<OrderDetails>,
+    @InjectRepository(Product) private productRepo: Repository<Product>,
     private transactionService: TransactionService,
   ) {}
 
@@ -18,7 +25,7 @@ export class OrdersService {
     orderStatus: OrderStatus,
     shippingAddress: string,
     userId: number,
-    products: Partial<Product>[],
+    products: any,
   ) {
     let queryRunner = await this.transactionService.startTransaction();
     try {
@@ -33,15 +40,28 @@ export class OrdersService {
 
       await queryRunner.manager.save(Order, order);
 
-      products.forEach((product) => (product['orderId'] = order.id));
-      const orderDetails = await queryRunner.manager.save(
-        OrderDetails,
-        products,
+      await Promise.all(
+        products.map(async (product) => {
+          const item = await this.productRepo.findOne({where : {productId : product.productId}})
+  
+          if (!item)
+            throw new BadRequestException(
+              `product with id: ${product.productId} not found`,
+            );
+
+          const orderDetails = this.orderDetailsRepo.create({
+            productId: product.productId,
+            orderId: order.id,
+            quantity: product.quantity,
+          });
+
+          await queryRunner.manager.save(OrderDetails, orderDetails);
+        }),
       );
 
       //commit transaction
       await this.transactionService.commitTransaction(queryRunner);
-      return orderDetails;
+      return order;
     } catch (err) {
       //rollback transaction
       await this.transactionService.rollbackTransaction(queryRunner);

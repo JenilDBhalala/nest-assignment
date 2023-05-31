@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ClassSerializerInterceptor } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
@@ -7,8 +7,9 @@ import { ProductsModule } from './modules/products/products.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ADMIN_CONFIG, JWT_CONFIG } from './config';
 import { TransactionModule } from './modules/transaction/transaction.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthGuard } from './core/guards/auth.guard';
+import { ResponseInterceptor } from './core/interceptors/response.interceptor';
 
 @Module({
   imports: [
@@ -44,6 +45,14 @@ import { AuthGuard } from './core/guards/auth.guard';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    {
+      provide : APP_INTERCEPTOR,
+      useClass : ClassSerializerInterceptor
+    },
+    {
+      provide : APP_INTERCEPTOR,
+      useClass : ResponseInterceptor
+    }
   ],
 })
 export class AppModule {}

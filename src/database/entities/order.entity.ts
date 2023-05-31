@@ -18,7 +18,6 @@ export class Order {
   @Column({ type: 'date' })
   orderDate: Date;
 
-  @Type(() => Date)
   @Column({ type: 'date' })
   expectedDeliveryDate: Date;
 

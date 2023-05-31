@@ -1,20 +1,16 @@
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { ValidationPipe, INestApplication } from '@nestjs/common';
+import { NestFactory} from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
 import { AppExceptionFilter } from './core/filters/exception.filter';
 import { ResponseInterceptor } from './core/interceptors/response.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as morgan from 'morgan';
+import helmet from 'helmet';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  app.useGlobalFilters(new AppExceptionFilter());
-  app.useGlobalInterceptors(new ResponseInterceptor());
+const baseUrl = '/api';
 
-  app.use(cookieParser());
-
+function configureSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('Product Store')
     .setDescription('Product Store API description')
@@ -25,15 +21,36 @@ async function bootstrap() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
         name: 'JWT',
-        description: 'Enter JWT token',
+        description: 'JWT token',
         in: 'header',
       },
       'Authorization',
     )
     .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
 
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup(baseUrl, app, document);
+}
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+
+  app.useGlobalFilters(new AppExceptionFilter());
+
+  app.use(morgan('dev'));
+  app.use(helmet());
+
+  configureSwagger(app);
+
+  //starting server
   const configService = app.get(ConfigService);
   const port = configService.get('PORT', 3001);
   await app.listen(port);
