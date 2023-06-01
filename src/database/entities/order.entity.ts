@@ -1,12 +1,6 @@
-import { Product } from '../../database/entities';
+import { OrderDetails, Product } from '../../database/entities';
 
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { OrderStatus } from '../../constants/orderstatus.enum';
 
 @Entity()
@@ -20,7 +14,7 @@ export class Order {
   @Column({ type: 'date' })
   expectedDeliveryDate: Date;
 
-  @Column({default : 'Pending'})
+  @Column({ default: 'Pending' })
   orderStatus: OrderStatus;
 
   @Column()
@@ -29,17 +23,20 @@ export class Order {
   @Column()
   userId: number;
 
-  @ManyToMany(() => Product)
-  @JoinTable({
-    name: 'order_details',
-    joinColumn: {
-      name: 'order_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'product_id',
-      referencedColumnName: 'productId',
-    },
-  })
-  products?: Product[];
+  // @ManyToMany(() => Product)
+  // @JoinTable({
+  //   name: 'order_details',
+  //   joinColumn: {
+  //     name: 'order_id',
+  //     referencedColumnName: 'id',
+  //   },
+  //   inverseJoinColumn: {
+  //     name: 'product_id',
+  //     referencedColumnName: 'productId',
+  //   },
+  // })
+  // products?: Product[];
+
+  @OneToMany(() => OrderDetails, (orderDetail) => orderDetail.order)
+  public orderDetails: OrderDetails[];
 }

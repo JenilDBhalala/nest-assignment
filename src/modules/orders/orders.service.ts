@@ -71,8 +71,19 @@ export class OrdersService {
     const queryBuilder = this.orderRepo.createQueryBuilder('order');
 
     const orders = await queryBuilder
-      .leftJoinAndSelect('order.products', 'products')
+      .leftJoinAndSelect('order.orderDetails', 'orderDetails')
+      .leftJoinAndSelect('orderDetails.product', 'product')
       .where('order.userId = :id', { id: userId })
+      .select([
+        'order.id',
+        'order.orderDate',
+        'order.expectedDeliveryDate',
+        'order.orderStatus',
+        'order.shippingAddress',
+        'order.userId',
+        'orderDetails.quantity',
+        'product',
+      ])
       .getMany();
 
     return orders;
