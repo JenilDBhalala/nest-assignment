@@ -23,9 +23,9 @@ import { ResponseInterceptor } from './core/interceptors/response.interceptor';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get('DB_HOST'),
         port: +configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
+        host: configService.get('DB_HOST'),
+        username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         entities: [__dirname + '/database/entities/*.entity{.ts,.js}'],
@@ -46,13 +46,13 @@ import { ResponseInterceptor } from './core/interceptors/response.interceptor';
       useClass: AuthGuard,
     },
     {
-      provide : APP_INTERCEPTOR,
-      useClass : ClassSerializerInterceptor
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
     },
     {
-      provide : APP_INTERCEPTOR,
-      useClass : ResponseInterceptor
-    }
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
+    },
   ],
 })
 export class AppModule {}

@@ -1,0 +1,35 @@
+version: "3"
+services: 
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - myvolume:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - .env
+ 
+  workspace:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: nest_workspace
+    container_name: nest_workspace
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    # volumes:
+    #   - ./src:/app/src    # for watch mode into container
+
+volumes:
+  myvolume:
+  
+
